@@ -135,11 +135,16 @@ class CardPanel extends JPanel {
         return null; // didn't find any card
     }
 
+    public void stackCardOnTop( Card card ) {
+        cards.remove( card );
+        cards.add( card );
+        repaint();
+    }
+
     public void moveCard( Card card, int x, int y ) {
         card.move(getGraphics(), this, x, y );
         repaint();
     }
-
 
     // internal helper class to handle mouse events
     class CardPanelMouseListener extends MouseAdapter implements MouseMotionListener {
@@ -152,13 +157,24 @@ class CardPanel extends JPanel {
             myPanel = panel;
         }
 
+        // button down -- select top card
         public void mousePressed (MouseEvent e) {
             int x = e.getX();
             int y = e.getY();
 
-           selectedCard = myPanel.topCardUnderMouse(x,y);
+            selectedCard = myPanel.topCardUnderMouse(x,y);
         }
 
+        // button up -- deselect and move card to top
+        public void mouseReleased( MouseEvent e ) {
+
+            if( selectedCard != null )  {
+                myPanel.stackCardOnTop( selectedCard );
+                selectedCard = null;
+            }
+        }
+
+        // move and repaint card (i.e. animate movement)
         public void mouseDragged (MouseEvent e) {
             int x = e.getX();
             int y = e.getY();
@@ -168,6 +184,7 @@ class CardPanel extends JPanel {
             }
         }
 
+        // button down-up w/o moving -- flip top card
         public void mouseClicked( MouseEvent e) {
             int x = e.getX();
             int y = e.getY();
@@ -179,7 +196,6 @@ class CardPanel extends JPanel {
             else {
                 System.out.println( "found card under mouse when clicked" );
                 card.flip();
-                repaint();
             }
         }
 
