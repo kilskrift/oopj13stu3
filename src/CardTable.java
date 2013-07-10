@@ -1,4 +1,8 @@
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import java.awt.*;
+
+import static java.awt.Toolkit.*;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 
 /*
@@ -39,6 +43,14 @@ public class CardTable extends JFrame {
 
         //Create and set up the window.
         super("CardTable");
+
+        // calculate suitable JFrame position
+        Dimension screenSize = getDefaultToolkit().getScreenSize();
+
+        this.setPreferredSize(new Dimension(screenSize.width/2, screenSize.height/2));
+
+        this.setLocation(screenSize.width/4, screenSize.height/4);
+
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         //Schedule a job for the event-dispatching thread:
@@ -57,9 +69,18 @@ public class CardTable extends JFrame {
      */
     private void createAndShowGUI() {
 
+        // mostly taken from the Kalk3.java example files
+        Container c = this.getContentPane();
+
+        c.setLayout(new BorderLayout());
+        c.setBackground(Color.GREEN);
+
         //Add the ubiquitous "Hello World" label.
         JLabel label = new JLabel("Hello World");
         this.getContentPane().add(label);
+
+        label.setFont(new Font("SansSerif", Font.BOLD, 16));
+        label.setHorizontalAlignment(JLabel.CENTER);
 
         //Display the window.
         this.pack();
