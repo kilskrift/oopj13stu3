@@ -8,6 +8,15 @@ import java.util.ListIterator;
 
 import static java.awt.Toolkit.*;
 
+/*
+    Inlämningsuppgift 3 Objektorienterad programmering med Java sommaren 2013
+    Kristian Grossman-Madsen
+    https://github.com/kilskrift/oopj13stu3.git
+
+    See report.txt for a guide to the code, and README for build instructions.
+    You can reach me at 0707-793346 or kgm@kgm.cc if you need to. Jag talar svenska :)
+ */
+
 public class CardTable extends JFrame {
 
     // constructor, populates JFrame w/components
@@ -41,28 +50,17 @@ public class CardTable extends JFrame {
 
         // use JFrame BorderLayout
         this.getContentPane().setLayout(new BorderLayout());
-        this.getContentPane().setBackground(Color.LIGHT_GRAY);
-
-        //Add the ubiquitous "Hello World" label.
-        JLabel label = new JLabel("Hello World");
-        this.getContentPane().add(label);
-
-        label.setFont(new Font("SansSerif", Font.BOLD, 16));
-        label.setHorizontalAlignment(JLabel.CENTER);
-        label.setVerticalAlignment(JLabel.TOP);
 
         //Add a JPanel to contain the cards
         CardPanel panel = new CardPanel();
         this.getContentPane().add(panel);
-
-        panel.setBackground(Color.GREEN);
-        panel.setVisible(true);
 
         //Display the window.
         this.pack();
         this.setVisible(true);
     }
 
+    // start game
     public static void main(String[] args) {
 
         // program bootstrapped by CardTable constructor
@@ -72,24 +70,27 @@ public class CardTable extends JFrame {
 
 class CardPanel extends JPanel {
 
+    // container for all cards, first card is on bottom, last card on top
     ArrayList<Card> cards;
 
     CardPanel() {
 
-        CardPanelMouseListener myMouseListener = new CardPanelMouseListener(this);
+        // set CardPanel appearance
+        this.setBackground(Color.GREEN);
+        this.setVisible(true);
 
+        // listen for mouse clicks and movement
+        CardPanelMouseListener myMouseListener = new CardPanelMouseListener(this);
         addMouseListener(myMouseListener);
         addMouseMotionListener(myMouseListener);
 
-        // TODO move card creation to a loop or such
+        cards = new ArrayList<Card>();
+
+        // Add a couple of cards to panel to work with
         Card s1 = new Card( "img/s1.gif" );
         Card s2 = new Card( 25,25,"img/s2.gif" );
         Card s3 = new Card( 50,50,"img/s3.gif" );
 
-
-        cards = new ArrayList<Card>();
-
-        // test code
         cards.add(s1);
         s2.flip();
         cards.add( s2 );
@@ -114,7 +115,6 @@ class CardPanel extends JPanel {
 
         // additional custom repaint behaviour, i.e. drawing card(s)
         // cards overdraw each other in sequential order, i.e. first drawn are on bottom
-
         for( Card card : cards ) {
             card.draw(g, this);
         }
@@ -128,7 +128,7 @@ class CardPanel extends JPanel {
 
            Card card = (Card) reverseIterator.previous();
             if( card.isUnder( x, y ) ) {
-                return card;
+                return card; // first matching card is the topmost
             }
         }
 
@@ -149,9 +149,9 @@ class CardPanel extends JPanel {
     // internal helper class to handle mouse events
     class CardPanelMouseListener extends MouseAdapter implements MouseMotionListener {
 
-        Card selectedCard;
-
         CardPanel myPanel;
+
+        Card selectedCard; // topmost card under mouse
 
         CardPanelMouseListener( CardPanel panel ) {
             myPanel = panel;
@@ -190,12 +190,9 @@ class CardPanel extends JPanel {
             int y = e.getY();
 
             Card card = myPanel.topCardUnderMouse(x, y);
-            if( card == null ) {
-                System.out.println( "no card under mouse when clicked" );
-            }
-            else {
-                System.out.println( "found card under mouse when clicked" );
+            if( card != null ) {
                 card.flip();
+                repaint();
             }
         }
 
@@ -205,11 +202,11 @@ class CardPanel extends JPanel {
 
 class Card {
 
-    public int x, y;    // TODO getters, setters
-    private ImageIcon myIcon;
-    private ImageIcon myFront;
-    static private ImageIcon myBack = new ImageIcon( "img/b1fv.gif" );
-    boolean faceUp;
+    private int x, y;
+    private ImageIcon myIcon;   // current face up side of card
+    private ImageIcon myFront;  // card front
+    static private ImageIcon myBack = new ImageIcon( "img/b1fv.gif" ); // card back, common to all instances
+    boolean faceUp; // true iff front side up
 
     Card( int x, int y, String iconPath ) {
         this.x = x;
@@ -228,7 +225,7 @@ class Card {
     }
 
     public void setIcon(String iconPath) {
-        myFront = new ImageIcon( iconPath ); // TODO: no error handling
+        myFront = new ImageIcon( iconPath ); // TODO: no error handling if card illustration not found
     }
 
     public void flip() {
