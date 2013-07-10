@@ -117,8 +117,16 @@ class CardPanel extends JPanel {
         s3.flip();
         s3.flip();
         cards.add( s3 );
-    }
 
+        /* TODO move to unit tests
+        System.out.println( "s1, 0, 0 (true): " + s1.isUnder(0,0) );
+        System.out.println( "s1, 200, 200 (false): " + s1.isUnder(200,200) );
+        System.out.println( "s2, 25, 25 (t): " + s2.isUnder(25,25) );
+        System.out.println( "s2, 24, 25 (f): " + s2.isUnder(24,25) );
+        System.out.println( "s2, 25, 24 (f): " + s2.isUnder(25,24) );
+        System.out.println( "s3, 26, 26 (f): " + s3.isUnder(26,26) );
+        */
+    }
 
     public void paintComponent(Graphics g) {
 
@@ -170,6 +178,8 @@ class Card {
        g.drawImage(myIcon.getImage(), x, y, parentPanel); // x, y relative to parentPanel
     }
 
-
-
+    public boolean isUnder( int x, int y ) {
+        return ( this.x <= x && x <= (this.x + this.myIcon.getIconWidth()) &&
+                 this.y <= y && y <= (this.y + this.myIcon.getIconHeight()) );
+    }
 }
