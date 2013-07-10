@@ -4,6 +4,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 import static java.awt.Toolkit.*;
 
@@ -145,13 +146,45 @@ class CardPanel extends JPanel {
         }
     }
 
-    public boolean cardsUnder( int x, int y ) {
-        for( Card card : cards ) {
+    public Card topCardUnderMouse( int x, int y ) {
+
+        ListIterator reverseIterator = cards.listIterator(cards.size());
+
+        while( reverseIterator.hasPrevious()) {
+
+           Card card = (Card) reverseIterator.previous();
             if( card.isUnder( x, y ) ) {
-                return true;
+                return card;
             }
         }
-        return false; // didn't find any card
+
+        return null; // didn't find any card
+    }
+
+    // internal helper class to handle mouse events
+    class CardPanelMouseListener extends MouseAdapter implements MouseMotionListener {
+
+        CardPanel myPanel;
+
+        CardPanelMouseListener( CardPanel panel ) {
+            myPanel = panel;
+        }
+
+        public void mouseClicked( MouseEvent e) {
+            int x = e.getX();
+            int y = e.getY();
+
+            Card card = myPanel.topCardUnderMouse(x, y);
+            if( card == null ) {
+                System.out.println( "no card under mouse when clicked" );
+            }
+            else {
+                System.out.println( "found card under mouse when clicked" );
+                card.flip();
+                repaint();
+            }
+        }
+
     }
 
 }
@@ -200,25 +233,3 @@ class Card {
 
 }
 
-class CardPanelMouseListener extends MouseAdapter implements MouseMotionListener {
-
-    CardPanel myPanel;
-
-    CardPanelMouseListener( CardPanel panel ) {
-        myPanel = panel;
-    }
-
-    public void mouseClicked( MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
-
-        boolean found = myPanel.cardsUnder( x, y );
-        if( ! found ) {
-            System.out.println( "no card under mouse when clicked" );
-        }
-        else {
-            System.out.println( "found card under mouse when clicked" );
-        }
-    }
-
-}
