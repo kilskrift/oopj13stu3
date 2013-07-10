@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 import static java.awt.Toolkit.*;
 
@@ -98,29 +99,77 @@ public class CardTable extends JFrame {
 
 class CardPanel extends JPanel {
 
-    ImageIcon card = new ImageIcon("img/s1.gif");
+    ArrayList<Card> cards;
 
-    Card test = new Card( "img/s2.gif" );
+    CardPanel() {
+
+        // TODO move card creation to a loop or such
+        Card s1 = new Card( "img/s1.gif" );
+        Card s2 = new Card( 25,25,"img/s2.gif" );
+        Card s3 = new Card( 50,50,"img/s3.gif" );
+
+
+        cards = new ArrayList<Card>();
+        cards.add( s1 );
+        s2.flip();
+        cards.add( s2 );
+
+        s3.flip();
+        s3.flip();
+        cards.add( s3 );
+    }
+
 
     public void paintComponent(Graphics g) {
 
         super.paintComponent(g);
 
         // additional custom repaint behaviour, i.e. drawing card(s)
-        g.drawImage(card.getImage(), 50, 50, this );
-        g.drawImage(test.getIcon().getImage(), 100, 100, this );
+        // cards overdraw each other in sequential order, i.e. first drawn are on bottom
+
+        for( Card card : cards ) {
+            card.draw(g, this);
+        }
     }
 }
 
 class Card {
 
+    public int x, y;    // TODO getters, setters
     private ImageIcon myIcon;
+    private ImageIcon myFront;
+    static private ImageIcon myBack = new ImageIcon( "img/b1fv.gif" );
+    boolean faceUp;
+
+    Card( int x, int y, String iconPath ) {
+        this.x = x;
+        this.y = y;
+        this.faceUp = true;
+        this.setIcon(iconPath);
+        this.myIcon = myFront;
+    }
 
     Card( String iconPath ) {
-        myIcon = new ImageIcon("img/s1.gif");
+        this( 0, 0, iconPath );
     }
 
     public ImageIcon getIcon() {
         return this.myIcon;
     }
+
+    public void setIcon(String iconPath) {
+        myFront = new ImageIcon( iconPath ); // TODO: no error handling
+    }
+
+    public void flip() {
+        this.faceUp = ! this.faceUp;
+        this.myIcon = this.faceUp ? this.myFront : myBack;
+    }
+
+    public void draw( Graphics g, JPanel parentPanel ) {
+       g.drawImage(myIcon.getImage(), x, y, parentPanel); // x, y relative to parentPanel
+    }
+
+
+
 }
