@@ -8,37 +8,6 @@ import java.util.ListIterator;
 
 import static java.awt.Toolkit.*;
 
-/*
- * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *   - Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *
- *   - Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *
- *   - Neither the name of Oracle or the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 public class CardTable extends JFrame {
 
     // constructor, populates JFrame w/components
@@ -107,7 +76,10 @@ class CardPanel extends JPanel {
 
     CardPanel() {
 
-        addMouseListener(new CardPanelMouseListener(this));
+        CardPanelMouseListener myMouseListener = new CardPanelMouseListener(this);
+
+        addMouseListener(myMouseListener);
+        addMouseMotionListener(myMouseListener);
 
         // TODO move card creation to a loop or such
         Card s1 = new Card( "img/s1.gif" );
@@ -116,6 +88,8 @@ class CardPanel extends JPanel {
 
 
         cards = new ArrayList<Card>();
+
+        // test code
         cards.add(s1);
         s2.flip();
         cards.add( s2 );
@@ -161,13 +135,37 @@ class CardPanel extends JPanel {
         return null; // didn't find any card
     }
 
+    public void moveCard( Card card, int x, int y ) {
+        card.move(getGraphics(), this, x, y );
+        repaint();
+    }
+
+
     // internal helper class to handle mouse events
     class CardPanelMouseListener extends MouseAdapter implements MouseMotionListener {
+
+        Card selectedCard;
 
         CardPanel myPanel;
 
         CardPanelMouseListener( CardPanel panel ) {
             myPanel = panel;
+        }
+
+        public void mousePressed (MouseEvent e) {
+            int x = e.getX();
+            int y = e.getY();
+
+           selectedCard = myPanel.topCardUnderMouse(x,y);
+        }
+
+        public void mouseDragged (MouseEvent e) {
+            int x = e.getX();
+            int y = e.getY();
+
+            if( selectedCard != null ) {
+                myPanel.moveCard( selectedCard, x, y );
+            }
         }
 
         public void mouseClicked( MouseEvent e) {
@@ -229,6 +227,12 @@ class Card {
     public boolean isUnder( int x, int y ) {
         return ( this.x <= x && x <= (this.x + this.myIcon.getIconWidth()) &&
                  this.y <= y && y <= (this.y + this.myIcon.getIconHeight()) );
+    }
+
+    public void move( Graphics g, JPanel panel, int x, int y) {
+        this.x = x;
+        this.y = y;
+        this.draw( g, panel );
     }
 
 }
