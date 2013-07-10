@@ -96,33 +96,31 @@ public class CardTable extends JFrame {
     }
 }
 
-
 class CardPanel extends JPanel {
 
     ImageIcon card = new ImageIcon("img/s1.gif");
 
+    Card test = new Card( "img/s2.gif" );
 
     public void paintComponent(Graphics g) {
 
         super.paintComponent(g);
 
-        g.setColor(Color.RED);
-        g.fillRect(50, 50, 100, 200);
-
-        g.setColor(Color.GREEN);
-        g.fillRect(100,100, 60, 60);
-
-        g.setColor(Color.BLUE);
-        g.fillOval(170, 50, 100, 40);
-
-        g.setFont(new Font("SansSerif", Font.BOLD, 24));
-        g.setColor(Color.PINK);
-        g.drawString("Hej", 190, 70);
-
-        g.setColor(Color.RED);
-        g.drawString("Hopp", 210, 100);
-
+        // additional custom repaint behaviour, i.e. drawing card(s)
         g.drawImage(card.getImage(), 50, 50, this );
+        g.drawImage(test.getIcon().getImage(), 100, 100, this );
+    }
+}
 
+class Card {
+
+    private ImageIcon myIcon;
+
+    Card( String iconPath ) {
+        myIcon = new ImageIcon("img/s1.gif");
+    }
+
+    public ImageIcon getIcon() {
+        return this.myIcon;
     }
 }
