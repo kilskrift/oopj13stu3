@@ -1,9 +1,7 @@
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import java.awt.*;
 
 import static java.awt.Toolkit.*;
-import static javax.swing.JFrame.EXIT_ON_CLOSE;
 
 /*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
@@ -43,14 +41,6 @@ public class CardTable extends JFrame {
 
         //Create and set up the window.
         super("CardTable");
-
-        // calculate suitable JFrame position
-        Dimension screenSize = getDefaultToolkit().getScreenSize();
-
-        this.setPreferredSize(new Dimension(screenSize.width/2, screenSize.height/2));
-
-        this.setLocation(screenSize.width/4, screenSize.height/4);
-
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         //Schedule a job for the event-dispatching thread:
@@ -69,11 +59,15 @@ public class CardTable extends JFrame {
      */
     private void createAndShowGUI() {
 
-        // mostly taken from the Kalk3.java example files
-        Container c = this.getContentPane();
+        // calculate suitable JFrame screen position
+        Dimension screenSize = getDefaultToolkit().getScreenSize();
 
-        c.setLayout(new BorderLayout());
-        c.setBackground(Color.GREEN);
+        this.setPreferredSize(new Dimension(screenSize.width/2, screenSize.height/2));
+        this.setLocation(screenSize.width/4, screenSize.height/4);
+
+        // use JFrame BorderLayout
+        this.getContentPane().setLayout(new BorderLayout());
+        this.getContentPane().setBackground(Color.LIGHT_GRAY);
 
         //Add the ubiquitous "Hello World" label.
         JLabel label = new JLabel("Hello World");
@@ -81,6 +75,14 @@ public class CardTable extends JFrame {
 
         label.setFont(new Font("SansSerif", Font.BOLD, 16));
         label.setHorizontalAlignment(JLabel.CENTER);
+        label.setVerticalAlignment(JLabel.TOP);
+
+        //Add a JPanel to contain the cards
+        CardPanel panel = new CardPanel();
+        this.getContentPane().add(panel);
+
+        panel.setBackground(Color.GREEN);
+        panel.setVisible(true);
 
         //Display the window.
         this.pack();
@@ -91,5 +93,36 @@ public class CardTable extends JFrame {
 
         // program bootstrapped by CardTable constructor
         CardTable myTable = new CardTable();
+    }
+}
+
+
+class CardPanel extends JPanel {
+
+    ImageIcon card = new ImageIcon("img/s1.gif");
+
+
+    public void paintComponent(Graphics g) {
+
+        super.paintComponent(g);
+
+        g.setColor(Color.RED);
+        g.fillRect(50, 50, 100, 200);
+
+        g.setColor(Color.GREEN);
+        g.fillRect(100,100, 60, 60);
+
+        g.setColor(Color.BLUE);
+        g.fillOval(170, 50, 100, 40);
+
+        g.setFont(new Font("SansSerif", Font.BOLD, 24));
+        g.setColor(Color.PINK);
+        g.drawString("Hej", 190, 70);
+
+        g.setColor(Color.RED);
+        g.drawString("Hopp", 210, 100);
+
+        g.drawImage(card.getImage(), 50, 50, this );
+
     }
 }
