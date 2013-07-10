@@ -163,15 +163,15 @@ class CardPanel extends JPanel {
             int y = e.getY();
 
             selectedCard = myPanel.topCardUnderMouse(x,y);
+            if( selectedCard != null ) {
+                myPanel.stackCardOnTop( selectedCard );
+            }
         }
 
         // button up -- deselect and move card to top
         public void mouseReleased( MouseEvent e ) {
 
-            if( selectedCard != null )  {
-                myPanel.stackCardOnTop( selectedCard );
-                selectedCard = null;
-            }
+            selectedCard = null;
         }
 
         // move and repaint card (i.e. animate movement)
