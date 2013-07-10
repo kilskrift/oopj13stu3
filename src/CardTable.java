@@ -37,6 +37,10 @@ public class CardTable extends JFrame {
     // constructor, populates JFrame w/components
     CardTable() {
 
+        //Create and set up the window.
+        super("CardTable");
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -51,18 +55,15 @@ public class CardTable extends JFrame {
      * this method should be invoked from the
      * event-dispatching thread.
      */
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("HelloWorldSwing");
-        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    private void createAndShowGUI() {
 
         //Add the ubiquitous "Hello World" label.
         JLabel label = new JLabel("Hello World");
-        frame.getContentPane().add(label);
+        this.getContentPane().add(label);
 
         //Display the window.
-        frame.pack();
-        frame.setVisible(true);
+        this.pack();
+        this.setVisible(true);
     }
 
     public static void main(String[] args) {
