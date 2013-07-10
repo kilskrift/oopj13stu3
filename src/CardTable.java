@@ -1,5 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
 import static java.awt.Toolkit.*;
@@ -103,6 +106,8 @@ class CardPanel extends JPanel {
 
     CardPanel() {
 
+        addMouseListener(new CardPanelMouseListener(this));
+
         // TODO move card creation to a loop or such
         Card s1 = new Card( "img/s1.gif" );
         Card s2 = new Card( 25,25,"img/s2.gif" );
@@ -110,7 +115,7 @@ class CardPanel extends JPanel {
 
 
         cards = new ArrayList<Card>();
-        cards.add( s1 );
+        cards.add(s1);
         s2.flip();
         cards.add( s2 );
 
@@ -139,6 +144,16 @@ class CardPanel extends JPanel {
             card.draw(g, this);
         }
     }
+
+    public boolean cardsUnder( int x, int y ) {
+        for( Card card : cards ) {
+            if( card.isUnder( x, y ) ) {
+                return true;
+            }
+        }
+        return false; // didn't find any card
+    }
+
 }
 
 class Card {
@@ -182,4 +197,28 @@ class Card {
         return ( this.x <= x && x <= (this.x + this.myIcon.getIconWidth()) &&
                  this.y <= y && y <= (this.y + this.myIcon.getIconHeight()) );
     }
+
+}
+
+class CardPanelMouseListener extends MouseAdapter implements MouseMotionListener {
+
+    CardPanel myPanel;
+
+    CardPanelMouseListener( CardPanel panel ) {
+        myPanel = panel;
+    }
+
+    public void mouseClicked( MouseEvent e) {
+        int x = e.getX();
+        int y = e.getY();
+
+        boolean found = myPanel.cardsUnder( x, y );
+        if( ! found ) {
+            System.out.println( "no card under mouse when clicked" );
+        }
+        else {
+            System.out.println( "found card under mouse when clicked" );
+        }
+    }
+
 }
