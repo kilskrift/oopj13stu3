@@ -8,93 +8,40 @@ Packa upp zip-filen & kör programmet.
 
 Själva programmet
 
-commit 4eda310827196e92433db3960a12acedc9df10bd
-Author: Kristian G. Madsen <kgm@kgm.cc>
-Date:   Wed Jul 10 23:47:41 2013 +0200
+Se README-filen för instruktion för hur man bygger & kör programmet.)
+tl;dr
+$ java -jar uppgift3.jar <matches>
 
-    Able to move cards, modelled mainly after the example in  Punkter_4.java.
-
-commit 2f9c3d509f12fcb6d22fcc31cc30da5a1378ad86
-Author: Kristian G. Madsen <kgm@kgm.cc>
-Date:   Wed Jul 10 23:30:51 2013 +0200
-
-    Fixed it so that the top card is the one to interact w/ mouse clicks. Also, refreshed knowledge of generics casting syntax :)
-
-commit f1dd1fc9eacff2ca9077f8040131a8bc793c8064
-Author: Kristian G. Madsen <kgm@kgm.cc>
-Date:   Wed Jul 10 23:03:59 2013 +0200
-
-    Added mouseclick detection to CardPanel via CardPanelMouseListener
-
-commit 53f834e969106febfcff4c70d0b0df9a37888b59
-Author: Kristian G. Madsen <kgm@kgm.cc>
-Date:   Wed Jul 10 22:41:10 2013 +0200
-
-    Added Card.underXY() to see if under a set of coordinates
-
-commit 24275e47f106874d3858fb072d78d0039b30ed41
-Author: Kristian G. Madsen <kgm@kgm.cc>
-Date:   Wed Jul 10 22:19:47 2013 +0200
-
-    Added ArrayList for cards to CardPanel.
-    Added flip function to Card to turn cards over.
-
-commit a30c037ac5308bab50f884953742c9b754c3d563
-Author: Kristian G. Madsen <kgm@kgm.cc>
-Date:   Wed Jul 10 21:06:31 2013 +0200
-
-    Created Card class.
-
-commit 20f957e1a9bca175cd9abebbd7714bed330dcbe8
-Author: Kristian G. Madsen <kgm@kgm.cc>
-Date:   Wed Jul 10 20:49:42 2013 +0200
-
-    Added card picture files to repo.
-
-commit 289083c7facd73e68ca1e16ea68da97ee48a4ee0
-Author: Kristian G. Madsen <kgm@kgm.cc>
-Date:   Wed Jul 10 20:48:24 2013 +0200
-
-    Added a JPanel, draws a card and various shapes.
-
-commit f8e903873113a37c98d3808dd2411ae21bb6da59
-Author: Kristian G. Madsen <kgm@kgm.cc>
-Date:   Wed Jul 10 20:05:45 2013 +0200
-
-    Changed to BorderLayout, draws a centered JLabel.
-
-commit 068b7ded0cd1b27bac07fb7ef3b9a911a4d6f199
-Author: Kristian G. Madsen <kgm@kgm.cc>
-Date:   Wed Jul 10 19:35:14 2013 +0200
-
-    Proper setup of CardTable JFrame properties in constructor.
-
-commit 1fd3feb2cb1c7f457dd6b136eb00f52379e2911f
-Author: Kristian G. Madsen <kgm@kgm.cc>
-Date:   Wed Jul 10 19:30:55 2013 +0200
-
-    Moved program GUI start code into CardTable constructor. main() now only creates an instance of CardTable
-
-commit 1e2c66c7490a5964dc5aa73d2951729d508f21cc
-Author: Kristian G. Madsen <kgm@kgm.cc>
-Date:   Wed Jul 10 19:07:04 2013 +0200
-
-    Added Oracle Swing HelloWorld example
-
-Vad gäller min implementation ligger den mesta logiken i klasserna CardPanel, CardPanelMouseListener & Card-klasserna.
+I min implementation av uppgift 3 ligger den mesta logiken i klasserna CardPanel,CardPanelMouseListener, & Card självt.
 
 Programmet startas när main() skapar en instans av CardTable-klassen, som innehåller en CardPanel som i sin tur
-innehåller korten.
+innehåller korten i en ArrayList. CardPanel innehåller också en hjälpklass för att hantera mus-event.
 
-Programmet följer i stort upplägget från exemplen i instuderingsavsnitten.
+Programmet följer i stort upplägget från exemplen i instuderingsavsnitten. Jag började med att skapa ett fönster, sedan
+lade jag till en JPanel där jag ritade upp först ett, sedan flera kort. Jag byggde hela tiden på med ny funktionalitet i
+den takt den behövdes. Efter att ha lagt till lite kod för att kunna vända på kort implementerade jag en eventlyssnare
+som dels vände kort vid mustryckningar, dels flyttade & ritade om kort. Tyvärr kom jag även denna gång i tidsnöd & fick
+lämna in koden utan att ha implementerat att flyttade kort skulle läggas "överst" på spelbordet. Även första utkastet av
+rapporten blev lidande, och var ganska summarisk. Förhoppningsvis kan git-historiken hjälpa koden att tala för sig ändå.
 
-Jag har tyvärr inte hunnit implementera funktionen att listan av kort "sorteras om" efter det att korten flyttats.
+Titta alltså gärna i mina commits på github för att se hur koden såg ut i respektive "steg":
 
-Min tanke är att det sker genom att man på MouseReleased-eventet flyttar ut det kort som är CardSelected i muslyssnaren
-och lägger in det längst bak i listan på kort i CardPanel-instansen. Det är även genom denna (en ArrayList) som jag tar
-ut det kort som ligger "överst" i vyn, dvs. det som är senast tillags (sist) i ArrayListen.
+https://github.com/kilskrift/oopj13stu3/commits/master
 
-Överlag en kul uppgift, och det var inte så jobbigt att komma igång med att koda grafisk Java som jag kanske dragit mig
-för att upptäcka.
+Korten ritas ut i den ordning de lagts in i ArrayListen, med andra ord är det de sist inlagda korten som ligger "överst"
+på spelbordet. Det framgår i koden i CardPanels paintComponent-metod, där korten ritas ut. Jämför hur jag går igenom
+listan av kort i omvänd ordning i getTopCardUnderMouse() för att returnera det "översta" med första träffen, medan de
+"lägre" liggande korten ritas över av senare kort i listan.
+
+När man drar ett kort läggs det nu överst direkt, så att det skall se bra ut när man drar ett kort som legat under ett
+annat med musen.
+
+Igen var bland det svåraste att göra en bra paketering av körbar kod. Jag behöver läsa in mig ordentligt på hur Java
+hanterar classpath, här har det varit ett problem att använda en utvecklingsmiljö, som jag upplever löser detta lite
+väl "magiskt" utan att redovisa hur den hanterar källkod i en mapp, bilder i en annan osv. Jag har skickat med en färdig
+jar-fil tillsvidare. Se även README-filen för info om hur man bygger sin egen jarfil.
+
+Detta var annars en rolig uppgift, som var ganska rättfram om man följde föreläsningsanteckningarna & exempelkoden som
+hörde till dem. Det var alltså inte så jobbigt att komma igång med att koda GUI i Java som jag kanske trott.
 
 I natten, Kristian G. Madsen
